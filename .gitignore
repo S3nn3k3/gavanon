@@ -1,0 +1,8 @@
+dist
+build
+docs/_build
+.vscode
+*.ipynb_checkpoints
+*.egg-info
+*__pycache__
+/.venv/
