@@ -9,9 +9,6 @@ from ._element import _Element
 class Source(_Element):
     """Source base class"""
 
-    def __init__(self) -> None:
-        super().__init__()
-
 
 class VoltageSource(Source):
     """Voltage source
@@ -21,21 +18,33 @@ class VoltageSource(Source):
     """
 
     def __init__(self, V: Optional[Union[float, int]] = None) -> None:
+        if V:
+            self.V = V  # use setter for santization
         self._V: float = 0
-        self.V = V  # use setter for santization
         super().__init__()
 
     @property
-    def V(self):
+    def V(self) -> float:
+        """Voltage source voltage property
+
+        Returns:
+            float: _description_
+        """
         return self._V
 
     @V.setter
     def V(self, v_val):
-        if not (isinstance(v_val, int) or isinstance(v_val, float)):
+        if not isinstance(v_val, (int, float)):
             raise TypeError("Voltage must be a float!")
-        self._V = v_val
+        self._V = float(v_val)
 
     def _properties(self) -> list:
+        """Function to generate skill script.\n
+        This function does not give any relevant functionality for the end user.
+
+        Returns:
+            list: skill script paramters
+        """
         return [self.name, f"vdc={self._V:.3f}"]
 
 
@@ -47,19 +56,31 @@ class CurrentSource(Source):
     """
 
     def __init__(self, I: Optional[Union[float, int]] = None) -> None:
+        if I:
+            self.I = I  # use setter for santization
         self._I: float = 0
-        self.I = I  # use setter for santization
         super().__init__()
 
     @property
-    def I(self):
+    def I(self) -> float:
+        """Current source current property
+
+        Returns:
+            float: Current source current
+        """
         return self._I
 
     @I.setter
     def I(self, i_val):
         if not isinstance(i_val, (int, float)):
             raise TypeError("Current must be a float!")
-        self._I = i_val
+        self._I = float(i_val)
 
     def _properties(self) -> list:
+        """Function to generate skill script.\n
+        This function does not give any relevant functionality for the end user.
+
+        Returns:
+            list: skill script paramters
+        """
         return [self.name, f"idc={self._I*1e6:.3f}u"]
