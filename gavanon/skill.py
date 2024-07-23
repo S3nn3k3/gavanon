@@ -1,4 +1,7 @@
-# Copyright Senne Vanden Berghe, 2024
+"""Copyright Senne Vanden Berghe, 2024
+This file contains the classes that corresponds to the Cadence logic and
+skill scripts.
+"""
 
 from __future__ import annotations
 from typing import List, Union
@@ -11,11 +14,18 @@ from .sources import CurrentSource, VoltageSource
 
 
 class CadenceCell:
+    """
+    Args:
+        name (str): Name of the Cadence library
+
+    Raises:
+        TypeError: When name is not a string.
+    """
+
     def __init__(self, name: str) -> None:
         if not isinstance(name, str):
             raise TypeError("Library name must be a string!")
-        else:
-            self._name: str = name
+        self._name: str = name
 
         self._transistors: List[Transistor] = []
         self._double_transistors: List[DoubleTransistor] = []
@@ -23,9 +33,16 @@ class CadenceCell:
         self._voltage_sources: List[VoltageSource] = []
         self._free_entries: List[str] = []
 
-    def add(self, element: Union[Transistor, DoubleTransistor, CurrentSource, VoltageSource], *args):
-        """Add an element to the CadanceCell class"""
-        for e in [element] + list(args):
+    def add(self, *args: Union[Transistor, DoubleTransistor, CurrentSource, VoltageSource]):
+        """Add one or multiple elements to this cell.
+
+        Args:
+            *args (Union[Transistor, DoubleTransistor, CurrentSource, VoltageSource]): Transistors or Sources can be added.
+
+        Returns:
+            CadanceCell: self
+        """
+        for e in list(args):
             if isinstance(e, Transistor):
                 self._transistors.append(e)
             elif isinstance(e, DoubleTransistor):
@@ -35,8 +52,7 @@ class CadenceCell:
             elif isinstance(e, VoltageSource):
                 self._voltage_sources.append(e)
             else:
-                warnings.warn(
-                    f"Cannot add instance which is not Transistor OR DoubleTransistor OR CurrentSource OR VoltageSource. ({repr(e)})")  # noqa E501
+                warnings.warn(f"Cannot add instance which is not Transistor OR DoubleTransistor OR CurrentSource OR VoltageSource. ({repr(e)})")  # noqa E501
         return self
 
     def __iadd__(self, element: Union[Transistor, DoubleTransistor, CurrentSource, VoltageSource]):
@@ -80,25 +96,30 @@ class CadenceCell:
         return text
 
     def export_sizing(self, skill_name: str, lib_name: str):
-        # Is not really needed since most of the time you just use a CadenceLib instance
-        with open(skill_name, 'w') as file:
+        """Export sizing from a cell instead of library object to a skill file.\n
+        Avoid this function:
+        Exporting from a library object is preferred!
+
+        Args:
+            skill_name (str): name or path of the skill script.
+            lib_name (str): name of the Cadence library
+        """
+        with open(skill_name, 'w', encoding='utf-8') as file:
             file.write("load(\"autoschematic.il\")\n")
             file.write(self._get_set_properties_text(lib_name))
 
 
 class CadenceLib:
-    """Cadance Libray class
+    """Cadence Libray class is used to define the Cadence library.
+
+    Args:
+        name (str): Name of the Cadence library
+
+    Raises:
+        TypeError: When name is not a string.
     """
 
     def __init__(self, name: str) -> None:
-        """Cadence Libray class is used to define the Cadence library.
-
-        Args:
-            name (str): Name of the Cadence library
-
-        Raises:
-            TypeError: When name is not a string.
-        """
         if not isinstance(name, str):
             raise TypeError("Library name must be a string!")
 
@@ -107,7 +128,10 @@ class CadenceLib:
         self._cells: List[CadenceCell] = []
 
     def add(self, *args: CadenceCell):
-        """Add (multiple) CadanceCell objects to the CadenceLib class object. \n
+        """Add (multiple) CadenceCell objects to the CadenceLib class object.
+
+        Args:
+            *args (CadenceCell): Cadence cell that needs to be added to this library object.
         """
         for c in list(args):
             if isinstance(c, CadenceCell):
@@ -123,13 +147,10 @@ class CadenceLib:
         return self._name
 
     def export_sizing(self, skill_name: Union[str, bytes, PathLike]):
-        """Makes skill script file in __main__ directory or specified path.
+        """Export sizing from all the cells added to this library object to a skill file.\n
 
         Args:
             skill_name (Union[str, bytes, PathLike]): name or path of the skill script.
-
-        Returns:
-            self
         """
         with open(skill_name, 'w', encoding='utf-8') as file:
             file.write("load(\"autoschematic.il\")\n")

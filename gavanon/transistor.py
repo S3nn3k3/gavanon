@@ -129,8 +129,7 @@ class Transistor(_Element):
 
     def __str__(self):
         return " ".join(
-            self._properties()
-            + [f"ID={self.__ID*1e6:.3f}u", f"gmoverid={self.__gmoverid:.2f}"]
+            self._properties() + [f"ID={self.__ID*1e6:.3f}u", f"gmoverid={self.__gmoverid:.2f}"]
         )
 
     def __truediv__(self, other: Union[float, int]):

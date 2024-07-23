@@ -1,4 +1,4 @@
-# Copyright Senne vanden Berghe, 2024
+"""Copyright Senne vanden Berghe, 2024"""
 
 from __future__ import annotations
 from typing import Optional
@@ -36,6 +36,11 @@ class _Element:
 
     @property
     def name(self):
+        """name property
+
+        Returns:
+            Optional[str]: name of the element
+        """
         if not self._name_manually_set:  # name must only be updated when name is NOT manually set
             self._update_name()
         return self._name

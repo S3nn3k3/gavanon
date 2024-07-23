@@ -1,4 +1,6 @@
-# Copyright Senne vanden Berghe, 2024
+"""Copyright Senne vanden Berghe, 2024
+This file contains all classes regarding to sources in the design.
+"""
 
 from __future__ import annotations
 from typing import Optional, Union
@@ -14,7 +16,7 @@ class VoltageSource(Source):
     """Voltage source
 
     Args:
-        V (Optional[Union[float, int]], optional): Voltage. Defaults to None.
+        V (Optional[Union[float, int]], optional): Voltage in Volt. Defaults to None.
     """
 
     def __init__(self, V: Optional[Union[float, int]] = None) -> None:
@@ -28,7 +30,7 @@ class VoltageSource(Source):
         """Voltage source voltage property
 
         Returns:
-            float: _description_
+            float: Voltage source voltage in Volt
         """
         return self._V
 
@@ -52,7 +54,7 @@ class CurrentSource(Source):
     """Current source
 
     Args:
-        I (Optional[Union[float, int]], optional): Current. Defaults to None.
+        I (Optional[Union[float, int]], optional): Current in Ampère. Defaults to None.
     """
 
     def __init__(self, I: Optional[Union[float, int]] = None) -> None:
@@ -66,7 +68,7 @@ class CurrentSource(Source):
         """Current source current property
 
         Returns:
-            float: Current source current
+            float: Current source current in Ampère
         """
         return self._I
 
